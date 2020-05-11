@@ -1,26 +1,67 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import GridList from "react-gridlist";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const images = Array.from({ length: 50 }, (_, i) => {
+  let width = 300
+  let height = Math.floor(Math.random() * 300) + 200;
+  return {
+    url: `https://i.picsum.photos/id/${Math.floor(Math.random() * 100) + 100}/${width}/${height}.jpg`,
+    width,
+    height,
+  }
+})
+
+let styles = {
+	container: {
+    margin: "20px auto",
+		padding: "0 20px"
+  },
+	image: {
+		position: "relative",
+		width: "100%",
+		height: "auto",
+		verticalAlign: "top",
+		background: "hsl(0, 0%, 98%)"
+  }
 }
 
-export default App;
+const getGridGap = (elementWidth, windowHeight) => (elementWidth > 720 && windowHeight > 480) ? 10 : 5;
+
+const getColumnCount = (elementWidth) => Math.floor(elementWidth / 300);
+
+const getWindowMargin = (windowHeight) => Math.round(windowHeight * 1.5);
+
+const getItemData = (image, columnWidth) => {
+  let imageRatio = image.height / image.width
+  let adjustedHeight = Math.round(columnWidth * imageRatio)
+  return {
+    key: image.url,
+    height: adjustedHeight,
+  }
+}
+
+const App = () => {
+  return (
+    <div style={styles.container}>
+      <GridList
+        items={images}
+        getGridGap={getGridGap}
+        getColumnCount={getColumnCount}
+        getWindowMargin={getWindowMargin}
+        getItemData={getItemData}
+        renderItem={(image) => {
+          return (
+            <img
+              src={image.url}
+              width={image.width}
+              height={image.height}
+              style={styles.image}
+            />
+          )
+        }}
+      />
+    </div>
+  )
+}
+
+export default App
